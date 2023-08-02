@@ -12,10 +12,13 @@ class MyHomePage extends StatelessWidget {
   Future<List<Player>> getTeams() async {
     var respone = await http.get(Uri.http('balldontlie.io', '/api/v1/players'));
     var jsondata = jsonDecode(respone.body);
+    print(jsondata);
 
     for (var eachPlayer in jsondata['data']) {
-      final team = Player(eachPlayer['first_name'].toString(),
-          eachPlayer['position'].toString(), eachPlayer['city'].toString());
+      final team = Player(
+        eachPlayer['first_name'].toString(),
+        eachPlayer['position'].toString(),
+      );
       teams.add(team);
     }
     return teams;
@@ -24,6 +27,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(backgroundColor: Colors.red),
       body: FutureBuilder(
         future: getTeams(),
         builder: (context, snapshot) {
@@ -33,7 +37,22 @@ class MyHomePage extends StatelessWidget {
               itemCount: teams.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(teams[index].name),
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.blue,
+                    child: Text('${index + 1}',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(teams[index].name),
+                      // Text(teams[index].city),
+                      Text(teams[index].position),
+                      const Divider(
+                        thickness: 1,
+                      )
+                    ],
+                  ),
                 );
               },
             );
